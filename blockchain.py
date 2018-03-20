@@ -1,9 +1,11 @@
 import hashlib
 from time import time
 from uuid import uuid4
-from textwrap import dednt
-from flask import Flask,jsonify,request
 import json
+import requests
+from textwrap import dedent
+from flask import Flask, jsonify, request
+
 
 class Blockchain(object):
 	"""docstring for Blockchain"""
@@ -13,7 +15,7 @@ class Blockchain(object):
 		#create a genesis block
 		self.new_block(previous_hash=1,proof=100)
 	
-	def new_block(self,previous_hash=None,proof):
+	def new_block(self,proof,previous_hash=None):
 		#this code is used to make the new blocks
 		block = {
 			'index' : len(self.chain)+1,
@@ -38,17 +40,18 @@ class Blockchain(object):
 			})
 		return self.last_block['index']+1
 
-	def proof_of_work(self,last_proof):
+	def proof_of_work(self,last_block):
+		last_proof = last_block['proof']
+		last_hash = self.hash(last_block)
 		proof = 0
-		while self.valid_proof(last_proof,proof) is False:
+		while self.valid_proof(last_proof,proof,last_hash) is False:
 			proof += 1
 		return proof
 
-	def valid_proof(last_proof,proof):
-		guess = f'{last_proof}{proof}'.encode()
+	def valid_proof(self,last_proof,proof,last_hash):
+		guess = f'{last_proof}{proof}{last_hash}'.encode()
 		guess_hash = hashlib.sha256(guess).hexdigest()
-        return guess_hash[:4] == "0000"
-
+		return guess_hash[:4] == "0000"
 
 	@staticmethod
 	def hash(block):
@@ -62,7 +65,7 @@ class Blockchain(object):
 		return self.chain[-1]
 
 #instantiating our node 
-app = flask(__name__)
+app = Flask(__name__)
 
 #global unique id
 node_identifier = str(uuid4()).replace('-','')
@@ -71,19 +74,38 @@ node_identifier = str(uuid4()).replace('-','')
 
 blockchain = Blockchain()
 
-@app.route('/mine',method=['GET'])
+@app.route('/mine',methods=['GET'])
 def mine():
 	#proof of work algorithm to get next proof
 	last_block = blockchain.last_block
-	last_proof = last_block['proof']
-	proof = blockchain.proof_of_work(last_proof)
+	proof = blockchain.proof_of_work(last_block)
 
-@app.route('/transations/new',method=['POST'])
+	#we have to find a way for the blockchain to have it's root entry
+	#the states are 0 to show that the property chain has started
+	blockchain.new_transaction(
+		init_state = '0',
+		final_state = node_identifier,
+		resources_used = '',
+		pollutants = ''
+		)
+	previous_hash = blockchain.hash(last_block)
+	block = blockchain.new_block(proof,previous_hash)
+
+	response = {
+		'message' : 'New block made',
+		'index' : block['index'],
+		'transations' : block['transations'],
+		'proof' : block['proof'],
+		'previous_hash' : block['previous_hash'],
+	}
+	return jsonify(response), 200
+
+@app.route('/transactions/new',methods=['POST'])
 def transations_new():
 	values = request.get_json()
 	#required fields
 	required = ['init_state','final_state','resources_used','pollutants']
-	if not all(k in values for all k in required):
+	if not all(k in values for k in required):
 		return 'Missing values',400
 
 	#create a new transaction
@@ -91,7 +113,7 @@ def transations_new():
 	response = {'message' : f'transaction will be added to the block {index}'}
 	return jsonify(response),201
 
-@app.route('/chain',method=['GET'])
+@app.route('/chain',methods=['GET'])
 def chain():
 	response = {
 		'chain' : blockchain.chain,
