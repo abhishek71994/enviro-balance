@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <title>Enviro-balance</title>
-    <link rel="stylesheet" type="text/css" href="webpage.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/webpage.css') }}">
     <!--[if lt IE 9]>
     <script>
       document.createElement("article");
@@ -18,7 +18,7 @@
   </head>
   <body>
     <header class="banner">
-      <h1>Comapny Name</h1>
+      <h1>Company Name</h1>
         <h4> Admin Name: </h4>
         <h4> Number of Products sold this year: </h4>
         <h4> Rating (User satisfaction) :
@@ -36,7 +36,7 @@
         <span class="fa fa-star"></span>
         <span class="fa fa-star"></span> </h4>
       <div class="card">
-        <img src="img1.jpg" alt="comapny name" style="width:50%">
+        <img src="{{ url_for('static',filename='img1.jpg') }}" alt="comapny name" style="width:50%">
         <h1>Ishani</h1>
         <p><button>Chat</button></p>
       </div>
