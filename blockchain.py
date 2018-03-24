@@ -71,7 +71,45 @@ class Blockchain(object):
 	def last_block(self):
 		#returns the last block
 		return self.chain[-1]
+	def valid_chain(self,chain):
+		last_block = chain[0]
+		current_index = 1
 
+		while current_index < len(chain):
+			block = chain[current_index]
+			print(f'{last_block}')
+			print(f'{block}')
+			print("\n-----------\n")
+			# Check that the hash of the block is correct
+			if block['previous_hash'] != self.hash(last_block):
+				return False
+
+			if not self.valid_proof(last_block['proof'], block['proof']):
+				return False
+
+			last_block = block
+			current_index += 1
+
+		return True
+	def resolve_conflict(self):
+		neighbours = self.nodes
+		new_chain = none
+		max_length = len(self.chain)
+
+		for node in neighbours:
+			response = requests.get(f'http://{node}/chain')
+			if response.status_code == 200 :
+				length = response.json()['length']
+				chain = response.json()['chain']
+				#check for longer chain and validate it
+				if length > max_length and self.valid_chain(chain):
+					new_length = length
+					new_chain = chain
+
+			if new_chain:
+				self.chain = new_chain
+				return True
+			return False
 #instantiating our node 
 app = Flask(__name__)
 
