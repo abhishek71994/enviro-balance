@@ -3,7 +3,9 @@ from time import time
 from uuid import uuid4
 import json
 import requests
+from urllib.parse import urlparse
 from textwrap import dedent
+import requests
 from flask import Flask, jsonify, request
 
 
@@ -12,6 +14,7 @@ class Blockchain(object):
 	def __init__(self):
 		self.chain = []
 		self.currentTransactions = []
+		self.node = set()
 		#create a genesis block
 		self.new_block(previous_hash='1',proof=100)
 	
@@ -30,11 +33,16 @@ class Blockchain(object):
 		self.chain.append(block);
 		return block
 
-	def new_transaction(self,init_state,final_state,resources_used,pollutants):
+	def register_node(self,address):
+		parsed_url = urlparse(address)
+		self.node.add(parsed_url.netloc)
+
+
+	def new_transaction(self,sender,reciever,resources_used,pollutants):
 		#this will add on the new transations that will be done
 		self.currentTransactions.append({
-			'init_state' : init_state,
-			'final_state' : final_state,
+			'sender' : sender,
+			'reciever' : reciever,
 			'resources_used' : resources_used,
 			'pollutants' : pollutants,
 			})
@@ -57,7 +65,7 @@ class Blockchain(object):
 	def hash(block):
 		#hashes a block
 		block_string = json.dumps(block,sort_keys=True).encode()
-		return hashlib.sha256(block_string).hexdigest()
+		return hashlib	.sha256(block_string).hexdigest()
 
 	@property
 	def last_block(self):
@@ -83,8 +91,8 @@ def mine():
 	#we have to find a way for the blockchain to have it's root entry
 	#the states are 0 to show that the property chain has started
 	blockchain.new_transaction(
-		init_state = '0',
-		final_state = node_identifier,
+		sender = '0',
+		reciever = node_identifier,
 		resources_used = '',
 		pollutants = ''
 		)
@@ -104,12 +112,12 @@ def mine():
 def transations_new():
 	values = request.get_json()
 	#required fields
-	required = ['init_state','final_state','resources_used','pollutants']
+	required = ['sender','reciever','resources_used','pollutants']
 	if not all(k in values for k in required):
 		return 'Missing values',400
 
 	#create a new transaction
-	index = blockchain.new_transaction(values['init_state'],values['final_state'],values['resources_used'],values['pollutants'])
+	index = blockchain.new_transaction(values['sender'],values['reciever'],values['resources_used'],values['pollutants'])
 	response = {'message' : f'transaction will be added to the block {index}'}
 	return jsonify(response),201
 
