@@ -6,7 +6,7 @@ import requests
 from urllib.parse import urlparse
 from textwrap import dedent
 import requests
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request,render_template
 
 
 class Blockchain(object):
@@ -178,6 +178,15 @@ def consensus():
 		}
 
 	return jsonify(response), 200
+@app.route('/')
+def index():
+	return render_template('index.html')
+@app.route('/manufacture')
+def manufacture():
+	return render_template('manufacture.html')
+@app.route('/buyer')
+def buyer():
+	return render_template('buyer.html')
 @app.route('/transactions/new',methods=['POST'])
 def transations_new():
 	values = request.get_json()
@@ -201,4 +210,4 @@ def chain():
 	return jsonify(response),200
 
 if __name__ == '__main__':
-	app.run(host='0.0.0.0',port=3000)
+app.run(host='0.0.0.0',port=3000)
