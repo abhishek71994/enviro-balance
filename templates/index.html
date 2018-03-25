@@ -3,39 +3,34 @@
   <head>
     <meta charset="UTF-8">
     <title>Enviro-balance</title>
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
-    <!--[if lt IE 9]>
-    <script>
-      document.createElement("article");
-      document.createElement("aside");
-      document.createElement("footer");
-      document.createElement("header");
-      document.createElement("main");
-      document.createElement("nav");
-      document.createElement("section");
-    </script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   </head>
   <body>
-      <nav>
-        <div class="nav-wrapper">
-          <a href="/" class="brand-logo right">Enviro-Balance</a>
-          <ul id="nav-mobile" class="left hide-on-med-and-down">
-            <li><a href="/manufacture">Manufacturer</a></li>
-            <li><a href="/buyer">Users</a></li>
-          </ul>
-        </div>
-      </nav>
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Brand</a>
+          </div>
 
-   <!--  <nav>
-      <ul>
-        <li><a href="index.html">Product 1</a></li>
-        <li><a href="archive.html">Product 2</a></li>
-        <li><a href="about.html">Product 3</a></li>
-      </ul>
-    </nav> -->
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+              <li><a href="/manufacture">Manufacturer</a></li>
+              <li><a href="/user">User</a></li>
+            </ul>
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+      </nav>
 
   </body>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+  <script type="text/javascript" src="{{ url_for('static',filename='js/script.js') }}"></script>
+  <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </html>

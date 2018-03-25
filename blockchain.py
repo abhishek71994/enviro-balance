@@ -38,11 +38,12 @@ class Blockchain(object):
 		self.node.add(parsed_url.netloc)
 
 
-	def new_transaction(self,sender,reciever,resources_used,pollutants):
+	def new_transaction(self,sender,reciever,entity,resources_used,pollutants):
 		#this will add on the new transations that will be done
 		self.currentTransactions.append({
 			'sender' : sender,
 			'reciever' : reciever,
+			'entity' : entity,
 			'resources_used' : resources_used,
 			'pollutants' : pollutants,
 			})
@@ -131,8 +132,9 @@ def mine():
 	blockchain.new_transaction(
 		sender = '0',
 		reciever = node_identifier,
-		resources_used = '',
-		pollutants = ''
+		entity = '',
+		resources_used = [],
+		pollutants = []
 		)
 	previous_hash = blockchain.hash(last_block)
 	block = blockchain.new_block(proof,previous_hash)
@@ -184,7 +186,7 @@ def index():
 @app.route('/manufacture')
 def manufacture():
 	return render_template('manufacture.html')
-@app.route('/buyer')
+@app.route('/user')
 def buyer():
 	return render_template('buyer.html')
 @app.route('/transactions/new',methods=['POST'])
@@ -192,11 +194,12 @@ def transations_new():
 	values = request.get_json()
 	#required fields
 	required = ['sender','reciever','resources_used','pollutants']
+	print(required)
 	if not all(k in values for k in required):
 		return 'Missing values',400
 
 	#create a new transaction
-	index = blockchain.new_transaction(values['sender'],values['reciever'],values['resources_used'],values['pollutants'])
+	index = blockchain.new_transaction(values['sender'],values['reciever'],values['entity'],values['resources_used'],values['pollutants'])
 	response = {'message' : f'transaction will be added to the block {index}'}
 	return jsonify(response),201
 
