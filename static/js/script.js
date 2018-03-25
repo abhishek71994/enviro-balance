@@ -25,4 +25,56 @@ $('#sel1').on('change', function() {
       }
       console.log(pollutants,resources);
     }
-})
+});
+
+$('#add').on('click',function(){
+	$('#res').append("<div class='form-inline'><label for='resources'>Resources Used:</label><input type='text' class='form-control' id='resources'><label for='resources'>Quantity(in mg):</label><input type='text' class='form-control' id='resources'></div>")
+});
+
+$("#manufact").on('click',function(e) {
+		var rec = $('#recieve').val();
+		var sen = $('#send').val();
+		var ent = $('#entity').val();
+		var resource = $('#resources');
+		console.log(resources);
+        //prevent Default functionality
+        e.preventDefault();
+        var dataURL = {
+			"reciever": `${rec}`,
+			"sender": `${sen}`,
+			"entity": `${ent}`,
+			"resources_used": [{"plastic":25},{"Wood":2000}],
+			"pollutants": ["CO2","SO2","CO"]
+		}
+        //get the action-url of the form
+        var actionurl = `http://localhost:3000/transactions/new`;
+        //do your own request an handle the results
+        $.ajax({
+                url: actionurl,
+                type: 'post',
+                contentType: 'application/json',
+                data: JSON.stringify(dataURL),
+                success: function(data) {
+                    console.log(data)
+                },
+                error: function(err){
+                	console.log(err);
+                }
+        });
+
+    });
+
+$('#mine').on('click', function() {
+    let request = new XMLHttpRequest();
+    let url = `http://localhost:3000/chain`;
+
+    request.onreadystatechange = function() {
+      if (this.readyState === 4 && this.status === 200) {
+        let response = JSON.parse(this.responseText);
+        alert("mining done");
+      }
+    }
+
+    request.open("GET", url, true);
+    request.send();
+});

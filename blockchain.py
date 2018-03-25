@@ -194,7 +194,6 @@ def transations_new():
 	values = request.get_json()
 	#required fields
 	required = ['sender','reciever','resources_used','pollutants']
-	print(required)
 	if not all(k in values for k in required):
 		return 'Missing values',400
 
@@ -213,4 +212,5 @@ def chain():
 	return jsonify(response),200
 
 if __name__ == '__main__':
+	app.debug = True
 	app.run(host='0.0.0.0',port=3000)
