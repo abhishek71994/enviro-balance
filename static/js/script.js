@@ -35,8 +35,12 @@ $("#manufact").on('click',function(e) {
 		var rec = $('#recieve').val();
 		var sen = $('#send').val();
 		var ent = $('#entity').val();
-		var resource = $('#resources');
-		console.log(resources);
+		var resource = $('.resources');
+		var res=[];
+		for(var i=0 ; i< resource.length;i+=2){
+			res.append(`"${resource[i].value}":${resource[i+1].value}`);
+		}
+		console.log(resource);
         //prevent Default functionality
         e.preventDefault();
         var dataURL = {

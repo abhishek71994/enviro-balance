@@ -15,6 +15,12 @@ $ git clone https://github.com/abhishek71994/enviro-balance && cd enviro-balance
 $ python3 blockchain.py
 ```
 
+## How to contribute
+
+* Fork the repository
+* Pick an issue, solve it.
+* open a PR
+
 ## Problem Statement 
 
 Address the problem of tracking the footprints of the pollutant that go into making everyday product that we use. Also, to keep track of the resources that have been used in making the commodity.
